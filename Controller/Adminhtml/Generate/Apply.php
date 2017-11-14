@@ -6,16 +6,18 @@ use MagentoEse\Wysiwygdesign\Helper\Data as HelperData;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\CacheInterface;
 
-class Apply extends AbstractGenerate
+
+class Apply extends \Magento\Framework\App\Action\Action
 {
 
-    public function __construct(Context $context, 
-        HelperData $helperData, 
-        CacheInterface $appCacheInterface)
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \MagentoEse\Wysiwygdesign\Model\CssContent $cssContent
+    )
     {
+        $this->cssContent = $cssContent;
 
-
-        parent::__construct($context, $helperData, $appCacheInterface);
+        return parent::__construct($context);
     }
 
     /**
@@ -25,14 +27,14 @@ class Apply extends AbstractGenerate
      */
     public function execute()
     {
-        $css_content = $this->_generateCssContent();
-        $this->_createCSSFile($css_content);
+        $css_content = $this->cssContent->generateCssContent();
+        $this->cssContent->createCssFile($css_content);
 
-        $helper = $this->_helperData;
+        //$helper = $this->_helperData;
 
-        if ($helper->getCacheClear()) {
-            $this->_clearCache();
-        }
+        //if ($helper->getCacheClear()) {
+        //    $this->_clearCache();
+        //}
 
         $result = 1;
         $this->getResponse()->setBody($result);
